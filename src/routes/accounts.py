@@ -309,9 +309,11 @@ async def user_login(
         raise HTTPException(status_code=403, detail="User account is not activated.")
 
     try:
-        payload = {"sub": str(db_user.id)}
+        payload = {"user_id": db_user.id}
+
         refresh_token = jwt_manager.create_refresh_token(data=payload)
         access_token = jwt_manager.create_access_token(data=payload)
+
         db_refresh_model = RefreshTokenModel.create(
             user_id=db_user.id,
             days_valid=settings.LOGIN_TIME_DAYS,
@@ -388,7 +390,7 @@ async def refresh_access_token(
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found.")
 
-    payload = {"sub": str(db_user.id)}
+    payload = {"user_id": db_user.id}
     new_access_token = jwt_manager.create_access_token(data=payload)
 
     return schemas.TokenRefreshResponseSchema(access_token=new_access_token)
