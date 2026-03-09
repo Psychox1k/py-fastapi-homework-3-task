@@ -258,8 +258,8 @@ async def reset_password_complete(
         raise HTTPException(status_code=400, detail="Invalid email or token.")
 
     try:
-
-        db_user.password = user_data.password
+        hashed = hash_password(user_data.password)
+        db_user._hashed_password = hashed
 
         await db.delete(token_record)
         await db.commit()
@@ -292,7 +292,7 @@ async def reset_password_complete(
             "description": "An error occurred while processing the request."
         }
     },
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_201_CREATED
 )
 async def user_login(
         user_data: schemas.UserLoginRequestSchema,
@@ -334,7 +334,7 @@ async def user_login(
 
 
 @router.post(
-    "/api/v1/accounts/refresh/",
+    "/refresh/",
     response_model=schemas.TokenRefreshResponseSchema,
     summary="Refresh access token",
     description=("Generates a new JWT access token using a valid refresh"
