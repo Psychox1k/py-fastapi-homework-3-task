@@ -238,10 +238,10 @@ async def reset_password_complete(
 ) -> MessageResponseSchema:
     db_user = await get_user_by_email(db=db, email=user_data.email)
     if not db_user:
-        raise HTTPException(status_code=400, detail="Invalid email or token")
+        raise HTTPException(status_code=400, detail="Invalid email or token.")
 
     if not db_user.is_active:
-        raise HTTPException(status_code=400, detail="Invalid email or token")
+        raise HTTPException(status_code=400, detail="Invalid email or token.")
 
     request = select(PasswordResetTokenModel).where(PasswordResetTokenModel.user_id == db_user.id)
     result = await db.execute(request)

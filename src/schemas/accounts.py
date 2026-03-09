@@ -15,7 +15,7 @@ class UserRegistrationRequestSchema(UserBase):
     @classmethod
     def validate_password_complexity(cls, value: str) -> str:
 
-        validators.validate_password_strength(value)
+        accounts_validators.validate_password_strength(value)
         return value
 
 
@@ -39,6 +39,12 @@ class PasswordResetRequestSchema(UserBase):
 class PasswordResetCompleteRequestSchema(UserBase):
     token: str
     password: str
+
+    @field_validator('password')
+    @classmethod
+    def validate_password(cls, value: str) -> str:
+        accounts_validators.validate_password_strength(value)
+        return value
 
 
 class UserLoginResponseSchema(BaseModel):
