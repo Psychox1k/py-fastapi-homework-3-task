@@ -378,7 +378,7 @@ async def refresh_access_token(
     if not token:
         raise HTTPException(status_code=401, detail="Refresh token not found.")
 
-    user_id = db_token.get("sub")
+    user_id = db_token.get("user_id")
     if not user_id:
         raise HTTPException(status_code=404, detail="User not found.")
 
